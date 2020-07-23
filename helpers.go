@@ -19,13 +19,17 @@ func check(err error) {
 
 // Copies file into the static html directory.
 func Copy(src string, dest string) {
-	cmd := exec.Command("cp", src, filepath.Join(root, dest))
+	dest = filepath.Join(root, dest)
+	check(os.MkdirAll(filepath.Dir(dest), 0755))
+	cmd := exec.Command("cp", src, dest)
 	check(cmd.Run())
 }
 
 // Create file in the static html directory and returns a file handle.
 func Create(path string) *os.File {
-	f, err := os.Create(filepath.Join(root, path))
+	path = filepath.Join(root, path)
+	check(os.MkdirAll(filepath.Dir(path), 0755))
+	f, err := os.Create(path)
 	check(err)
 	return f
 }
@@ -41,9 +45,4 @@ func Empty() {
 	for _, name := range names {
 		check(os.RemoveAll(filepath.Join(root, name)))
 	}
-}
-
-// Makes directory in the static html directory
-func Mkdir(path string) {
-	check(os.Mkdir(filepath.Join(root, path), 0755))
 }
