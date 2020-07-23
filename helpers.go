@@ -17,20 +17,15 @@ func check(err error) {
 	}
 }
 
-// help function that appends path to static html directory.
-func join_html(path string) string {
-	return filepath.Join(root, path)
-}
-
 // Copies file into the static html directory.
 func Copy(src string, dest string) {
-	cmd := exec.Command("cp", src, join_html(dest))
+	cmd := exec.Command("cp", src, filepath.Join(root, dest))
 	check(cmd.Run())
 }
 
 // Create file in the static html directory and returns a file handle.
 func Create(path string) *os.File {
-	f, err := os.Create(join_html(path))
+	f, err := os.Create(filepath.Join(root, path))
 	check(err)
 	return f
 }
@@ -44,11 +39,11 @@ func Empty() {
 	names, err := d.Readdirnames(-1)
 	check(err)
 	for _, name := range names {
-		check(os.RemoveAll(join_html(name)))
+		check(os.RemoveAll(filepath.Join(root, name)))
 	}
 }
 
 // Makes directory in the static html directory
 func Mkdir(path string) {
-	check(os.Mkdir(join_html(path), 0755))
+	check(os.Mkdir(filepath.Join(root, path), 0755))
 }
